@@ -1,0 +1,6 @@
+{
+  "name": "API Gatekeeper",
+  "description": "Enterprise-grade reverse-proxy security gateway with Response Shield (PII masking), OpenAPI Contract Guard, sliding-window rate limiting, and CIDR-aware access control.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

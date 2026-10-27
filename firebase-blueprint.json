@@ -1,0 +1,87 @@
+{
+  "entities": {
+    "SecurityIncident": {
+      "title": "Security Incident",
+      "description": "Recorded WAF telemetry event, anomaly attack vector, or probe payload",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "ip": { "type": "string", "maxLength": 64 },
+        "method": { "type": "string", "maxLength": 16 },
+        "path": { "type": "string", "maxLength": 512 },
+        "score": { "type": "number" },
+        "action": { "type": "string", "maxLength": 32 },
+        "category": { "type": "string", "maxLength": 64 },
+        "summary": { "type": "string", "maxLength": 1024 },
+        "rawPayload": { "type": "string", "maxLength": 4096 },
+        "rulesTriggered": { "type": "array" }
+      },
+      "required": ["id", "timestamp", "ip", "action", "score"]
+    },
+    "BannedIpRecord": {
+      "title": "Banned IP Record",
+      "description": "Active firewall IP ban record with strike count and duration",
+      "type": "object",
+      "properties": {
+        "ip": { "type": "string", "maxLength": 64 },
+        "strikes": { "type": "number" },
+        "reason": { "type": "string", "maxLength": 256 },
+        "bannedAt": { "type": "string", "format": "date-time" },
+        "expiresAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["ip", "strikes", "bannedAt"]
+    },
+    "UserProfile": {
+      "title": "User Profile",
+      "description": "Authenticated Operator / Auditor session account state",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "maxLength": 128 },
+        "email": { "type": "string", "maxLength": 256 },
+        "displayName": { "type": "string", "maxLength": 128 },
+        "role": { "type": "string", "maxLength": 32 },
+        "clearance": { "type": "string", "maxLength": 64 },
+        "lastActive": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "role"]
+    },
+    "GatewayConfig": {
+      "title": "Gateway Configuration",
+      "description": "Active perimeter settings, upstream backend URL, and OpenAPI contract",
+      "type": "object",
+      "properties": {
+        "activeUpstreamUrl": { "type": "string", "maxLength": 512 },
+        "activeOpenApiPath": { "type": "string", "maxLength": 256 },
+        "reachability": { "type": "string", "maxLength": 32 },
+        "contractValid": { "type": "boolean" },
+        "apiTitle": { "type": "string", "maxLength": 128 },
+        "apiVersion": { "type": "string", "maxLength": 32 },
+        "operationsCount": { "type": "number" },
+        "discoveredRoutes": { "type": "array" },
+        "lastCheckedAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "mode": { "type": "string", "maxLength": 32 }
+      },
+      "required": ["activeUpstreamUrl"]
+    }
+  },
+  "firestore": {
+    "/incidents/{incidentId}": {
+      "schema": { "$ref": "#/entities/SecurityIncident" },
+      "description": "Real-time security incidents and anomaly logs"
+    },
+    "/banned_ips/{ipId}": {
+      "schema": { "$ref": "#/entities/BannedIpRecord" },
+      "description": "Active perimeter banned IP addresses"
+    },
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "Operator user accounts and clearance credentials"
+    },
+    "/gateway_config/active": {
+      "schema": { "$ref": "#/entities/GatewayConfig" },
+      "description": "Global active gateway configuration state"
+    }
+  }
+}
