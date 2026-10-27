@@ -1,6 +1,5 @@
 import { type Request, type Response } from 'express';
-import { ai } from '../api.ts'; // We'll export ai from api.ts or move it too
-import { resolveIpGeo } from '../../src/gateway/geo.ts';
+import { ai } from '../api.ts';
 
 export async function handleVoiceDebrief(req: Request, res: Response) {
   try {
@@ -98,5 +97,62 @@ Keep under 60 words. Plain spoken sentences only.`;
   } catch (error: any) {
     console.error('Voice Debrief Error:', error);
     return res.status(500).json({ error: error.message || 'Failed to generate voice debrief.' });
+  }
+}
+
+export async function handleAiChat(req: Request, res: Response) {
+  try {
+    const { messages, systemInstruction } = req.body;
+    const contents = (messages || []).map((m: any) => ({
+      role: m.role,
+      parts: [{ text: m.content }]
+    }));
+
+    if (!ai) {
+      return res.json({ reply: "API Gatekeeper Sentinel is operating in offline mode. All firewall rules and signature engines are active." });
+    }
+
+    const response = await ai.models.generateContent({
+      model: 'gemini-3.8-flash',
+      contents,
+      config: {
+        systemInstruction: systemInstruction || "You are Sentinel, an elite AI Security and WAF Advisor for API Gatekeeper. Answer questions about API security, OWASP CRS rules, OpenAPI contracts, and threat mitigation clearly and authoritatively."
+      }
+    });
+
+    return res.json({ reply: response.text || "No response received." });
+  } catch (err: any) {
+    console.error('AI Chat Error:', err);
+    return res.status(500).json({ error: err.message || 'Chat error' });
+  }
+}
+
+export async function handleSearchGrounding(req: Request, res: Response) {
+  try {
+    const { query } = req.body;
+    if (!ai) {
+      return res.json({
+        answer: "Search grounding offline. Mock CVE advisory: CVE-2026-9912 API Remote Code Execution vulnerability patched via OpenAPI Contract Guard.",
+        sources: [{ title: "NVD Security Advisory", url: "https://nvd.nist.gov" }]
+      });
+    }
+
+    const response = await ai.models.generateContent({
+      model: 'gemini-3.8-flash',
+      contents: query || "What are the latest zero-day CVE advisories and OWASP API Top 10 threat vectors in 2026?",
+      tools: [{ googleSearch: {} }]
+    });
+
+    const text = response.text || "";
+    const groundingMetadata = response.candidates?.[0]?.groundingMetadata;
+    const searchChunks = groundingMetadata?.groundingChunks || [];
+
+    return res.json({
+      answer: text,
+      sources: searchChunks.map((c: any) => ({ title: c.web?.title, url: c.web?.uri })).filter((s: any) => s.url)
+    });
+  } catch (err: any) {
+    console.error('Search Grounding Error:', err);
+    return res.status(500).json({ error: err.message || 'Search grounding error' });
   }
 }

@@ -159,7 +159,14 @@ async function startServer() {
   } else {
     console.log('[Gateway] Running in Development mode (Vite enabled)');
     const vite = await createViteServer({
-      server: { middlewareMode: true },
+      server: {
+        middlewareMode: true,
+        allowedHosts: [
+          'api-gatekeeper.onrender.com',
+          '.onrender.com',
+          '.run.app'
+        ]
+      },
       appType: 'spa'
     });
     app.use(vite.middlewares);

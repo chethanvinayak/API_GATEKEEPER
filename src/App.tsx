@@ -14,6 +14,10 @@ import { AttackSimulatorView } from './components/AttackSimulatorView.tsx';
 import { FirewallRulesView } from './components/FirewallRulesView.tsx';
 import { IncidentDrawer } from './components/IncidentDrawer.tsx';
 import { UserProfileModal } from './components/UserProfileModal.tsx';
+import { ConnectApiView } from './components/ConnectApiView.tsx';
+import { ThreeSecurityGlobe } from './components/ThreeSecurityGlobe.tsx';
+import { ThreatIntelSearch } from './components/ThreatIntelSearch.tsx';
+import { SecurityChatDrawer } from './components/SecurityChatDrawer.tsx';
 import { ShieldAlert } from 'lucide-react';
 import { db, collection, onSnapshot, doc, setDoc } from './firebase.ts';
 import type {
@@ -22,7 +26,6 @@ import type {
   GatewayMode,
   ScorecardResult
 } from './gateway/types.ts';
-import { ConnectApiView } from './components/ConnectApiView.tsx';
 
 // Clean baseline stats: zero hardcoded pre-existing numbers
 const CLEAN_ZERO_STATS: GatewayStats = {
@@ -277,7 +280,21 @@ export default function App() {
           </div>
         )}
 
-        {/* TAB 2: Request Lab (User Input Area) */}
+        {/* TAB 2: Three.js 3D Threat Globe & Network Topology */}
+        {activeTab === 'globe' && (
+          <div className="space-y-6" id="panel-globe" role="tabpanel">
+            <ThreeSecurityGlobe stats={stats} events={events} />
+          </div>
+        )}
+
+        {/* TAB 3: Google Search Grounded Threat Intel */}
+        {activeTab === 'intel' && (
+          <div className="space-y-6" id="panel-intel" role="tabpanel">
+            <ThreatIntelSearch />
+          </div>
+        )}
+
+        {/* TAB 4: Request Lab (User Input Area) */}
         {activeTab === 'tester' && (
           <div id="panel-tester" role="tabpanel">
             <RequestLabView
@@ -287,7 +304,7 @@ export default function App() {
           </div>
         )}
 
-        {/* TAB 3: Attack Simulator (18 Attacks + 3 Benign Controls) */}
+        {/* TAB 5: Attack Simulator (18 Attacks + 3 Benign Controls) */}
         {activeTab === 'simulator' && (
           <div id="panel-simulator" role="tabpanel">
             <AttackSimulatorView
@@ -300,7 +317,7 @@ export default function App() {
           </div>
         )}
 
-        {/* TAB 4: WAF Policy & Firewall Rules Manager */}
+        {/* TAB 6: WAF Policy & Firewall Rules Manager */}
         {activeTab === 'rules' && (
           <div id="panel-rules" role="tabpanel">
             <FirewallRulesView
@@ -310,7 +327,7 @@ export default function App() {
           </div>
         )}
 
-        {/* TAB 5: Dedicated Voice Sentinel Command Center (Voice Assistant is ONLY highlighted here!) */}
+        {/* TAB 7: Dedicated Voice Sentinel Command Center */}
         {activeTab === 'voice' && (
           <div className="space-y-6" id="panel-voice" role="tabpanel">
             <div className="rounded-xl border border-slate-800 bg-slate-900/80 p-5">
@@ -322,7 +339,6 @@ export default function App() {
               </p>
             </div>
 
-            {/* Full Interactive Voice Sentinel Agent */}
             <VoiceSentinel
               selectedEvent={selectedEvent}
               scorecard={scorecard}
@@ -331,7 +347,6 @@ export default function App() {
               externalTrigger={externalVoiceTrigger}
             />
 
-            {/* Recent Incident Feed with 1-Click Voice Debrief */}
             <LiveAttackFeed
               events={events}
               onSelectEvent={setInspectedEvent}
@@ -339,7 +354,8 @@ export default function App() {
             />
           </div>
         )}
-        {/* TAB 6: API Connection & OpenAPI Integration Command Center */}
+
+        {/* TAB 8: API Connection & OpenAPI Integration Command Center */}
         {activeTab === 'connect' && (
           <div id="panel-connect" role="tabpanel">
             <ConnectApiView
@@ -350,6 +366,9 @@ export default function App() {
           </div>
         )}
       </main>
+
+      {/* Floating AI Security Chatbot Drawer */}
+      <SecurityChatDrawer />
 
       {/* Deep Telemetry Modal Incident Drawer */}
       {inspectedEvent && (
@@ -394,4 +413,4 @@ export default function App() {
       </footer>
     </div>
   );
-}
+};

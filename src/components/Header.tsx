@@ -6,7 +6,9 @@ import {
   RotateCcw,
   Sparkles,
   User,
-  LogOut
+  LogOut,
+  Globe,
+  Box
 } from 'lucide-react';
 import type { GatewayMode } from '../gateway/types.ts';
 import type { UserSession } from './LoginPage.tsx';
@@ -71,14 +73,14 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         {/* Zone 2: Primary Clean Navigation Tabs */}
-        <nav className="hidden lg:flex items-center gap-1.5 xl:gap-2 text-xs font-semibold" role="tablist" aria-label="Main Navigation">
+        <nav className="hidden lg:flex items-center gap-1 xl:gap-1.5 text-xs font-semibold" role="tablist" aria-label="Main Navigation">
           <button
             type="button"
             role="tab"
             aria-selected={activeTab === 'dashboard'}
             aria-controls="panel-dashboard"
             onClick={() => onTabChange('dashboard')}
-            className={`px-3.5 py-1.5 rounded-lg transition-colors cursor-pointer ${
+            className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
               activeTab === 'dashboard'
                 ? 'bg-slate-900 text-white font-bold shadow-xs'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
@@ -90,10 +92,42 @@ export const Header: React.FC<HeaderProps> = ({
           <button
             type="button"
             role="tab"
+            aria-selected={activeTab === 'globe'}
+            aria-controls="panel-globe"
+            onClick={() => onTabChange('globe')}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
+              activeTab === 'globe'
+                ? 'bg-slate-900 text-white font-bold shadow-xs'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+            }`}
+          >
+            <Box className="h-3.5 w-3.5 text-blue-400" />
+            <span>3D Globe</span>
+          </button>
+
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === 'intel'}
+            aria-controls="panel-intel"
+            onClick={() => onTabChange('intel')}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
+              activeTab === 'intel'
+                ? 'bg-slate-900 text-white font-bold shadow-xs'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+            }`}
+          >
+            <Globe className="h-3.5 w-3.5 text-emerald-500" />
+            <span>Threat Intel</span>
+          </button>
+
+          <button
+            type="button"
+            role="tab"
             aria-selected={activeTab === 'tester'}
             aria-controls="panel-tester"
             onClick={() => onTabChange('tester')}
-            className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg transition-all cursor-pointer ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
               activeTab === 'tester'
                 ? 'bg-slate-900 text-white font-bold shadow-xs'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
@@ -110,13 +144,13 @@ export const Header: React.FC<HeaderProps> = ({
             aria-selected={activeTab === 'simulator'}
             aria-controls="panel-simulator"
             onClick={() => onTabChange('simulator')}
-            className={`px-3.5 py-1.5 rounded-lg transition-colors cursor-pointer ${
+            className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
               activeTab === 'simulator'
                 ? 'bg-slate-900 text-white font-bold shadow-xs'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
             }`}
           >
-            Attack Simulator
+            Simulator
           </button>
 
           <button
@@ -125,7 +159,7 @@ export const Header: React.FC<HeaderProps> = ({
             aria-selected={activeTab === 'rules'}
             aria-controls="panel-rules"
             onClick={() => onTabChange('rules')}
-            className={`px-3.5 py-1.5 rounded-lg transition-colors cursor-pointer ${
+            className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
               activeTab === 'rules'
                 ? 'bg-slate-900 text-white font-bold shadow-xs'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
@@ -140,7 +174,7 @@ export const Header: React.FC<HeaderProps> = ({
             aria-selected={activeTab === 'voice'}
             aria-controls="panel-voice"
             onClick={() => onTabChange('voice')}
-            className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg transition-colors cursor-pointer ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
               activeTab === 'voice'
                 ? 'bg-slate-900 text-white font-bold shadow-xs'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
@@ -160,7 +194,7 @@ export const Header: React.FC<HeaderProps> = ({
             aria-selected={activeTab === 'connect'}
             aria-controls="panel-connect"
             onClick={() => onTabChange('connect')}
-            className={`px-3.5 py-1.5 rounded-lg transition-colors cursor-pointer ${
+            className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
               activeTab === 'connect'
                 ? 'bg-slate-900 text-white font-bold shadow-xs'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
@@ -172,7 +206,6 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Zone 3: Control Actions & Operator Session */}
         <div className="flex items-center gap-2.5 shrink-0">
-
           {/* Reset Telemetry Button */}
           <button
             type="button"
@@ -234,6 +267,20 @@ export const Header: React.FC<HeaderProps> = ({
           className={`px-3 py-1 rounded-md whitespace-nowrap font-medium ${activeTab === 'dashboard' ? 'bg-slate-900 text-white font-bold' : 'text-slate-600'}`}
         >
           Dashboard
+        </button>
+        <button
+          type="button"
+          onClick={() => onTabChange('globe')}
+          className={`px-3 py-1 rounded-md whitespace-nowrap font-medium ${activeTab === 'globe' ? 'bg-slate-900 text-white font-bold' : 'text-slate-600'}`}
+        >
+          3D Globe
+        </button>
+        <button
+          type="button"
+          onClick={() => onTabChange('intel')}
+          className={`px-3 py-1 rounded-md whitespace-nowrap font-medium ${activeTab === 'intel' ? 'bg-slate-900 text-white font-bold' : 'text-slate-600'}`}
+        >
+          Threat Intel
         </button>
         <button
           type="button"
